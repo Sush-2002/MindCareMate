@@ -3,8 +3,7 @@
 import { useState, useEffect } from "react";
 import Markdown from "react-markdown";
 import { Input } from "@/components/ui/input";
-import { MessageCircleCode, Upload } from "lucide-react";
-import { Send, Copy, Download } from "lucide-react";
+import { MessageCircleCode, Upload, Send, Copy, Download } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -13,202 +12,162 @@ import styles from "@/styles/styles.module.css";
 import { BeatLoader } from "react-spinners";
 
 export default function Home() {
-  // state for the prompt, response and output
+  // State variables
   const [prompt, setPrompt] = useState("");
   const [response, setResponse] = useState("");
   const [output, setOutput] = useState("The response will appear here...");
   const [loading, setLoading] = useState(false);
 
-  const onKeyDown = (e: any) => {
-    // Check if the Ctrl key is pressed along with the Enter key
+  // Handles Enter key to submit the prompt
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      // Prevent the default behavior of the Enter key (e.g., new line in textarea)
       e.preventDefault();
-      // Trigger the onSubmit function
       onSubmit();
     }
   };
 
-  const onFileChange = (e: any) => {
-    // Get the file
-    const file = e.target.files[0];
-    // Check if the file is null
+  // Handles file upload and reads text content
+  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
     if (!file) {
       toast.error("No file selected!");
       return;
     }
-    // Check if the file type is supported
+
     if (!file.type.includes("text")) {
       toast.error("File type not supported!");
       return;
     }
-    // Read the file
+
     const reader = new FileReader();
     reader.readAsText(file, "UTF-8");
-    // On reader load
-    reader.onload = (readerEvent) => {
-      // Set the prompt to the file content
-      // @ts-ignore
-      setPrompt(readerEvent.target?.result || "done");
+
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        setPrompt(reader.result);
+      }
     };
   };
 
+  // Copies output to clipboard
   const copyToClipboard = () => {
-    // Copy the output to the clipboard
     navigator.clipboard.writeText(output);
     toast.success("Copied to clipboard!");
   };
 
+  // Downloads the output as a text file
   const downloadFile = () => {
-    // Create a new blob
     const blob = new Blob([output], { type: "text/plain" });
-    // Create a new URL
-    const url = window.URL.createObjectURL(blob);
-    // Create a new anchor tag
+    const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
-    // Set the href and download attributes for the anchor tag
     anchor.href = url;
     anchor.download = "chat.txt";
-    // Click the anchor tag programmatically
     anchor.click();
-    // Remove the anchor tag from the body
-    anchor.remove();
-    // Revoke the URL
-    window.URL.revokeObjectURL(url);
+    URL.revokeObjectURL(url);
   };
 
+  // Handles API call for generating a response
   const onSubmit = async () => {
-    if (prompt === "") {
+    if (!prompt.trim()) {
       toast.error("Prompt cannot be empty!");
       return;
     }
 
-    // clear the output
     setOutput("The response will appear here...");
-
-    // set the loading state to true
     setLoading(true);
 
-    // create a post request to the /api/chat endpoint
-    const response = await fetch("api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userPrompt: prompt,
-      }),
-    });
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userPrompt: prompt }),
+      });
 
-    // get the response from the server
-    const data = await response.json();
+      // Ensure valid response before parsing JSON
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Something went wrong!");
+      }
 
-    setLoading(false)
+      const data = await response.json();
+      if (!data.text) {
+        throw new Error("No response from the server!");
+      }
 
-    if(data.error) {
-      toast.error(data.error);
-      return;
+      setResponse(data.text);
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
-
-    if(data.text === "") {
-      toast.error("No response from the server!");
-      return;
-    }
-
-    // set the response in the state
-    setResponse(data.text);
-
   };
 
+  // Animates the response text character by character
   useEffect(() => {
-    // update the response character by character in the output
-    if (response.length === 0) return;
-
+    if (!response) return;
     setOutput("");
 
-    for (let i = 0; i < response.length; i++) {
+    response.split("").forEach((char, i) => {
       setTimeout(() => {
-        setOutput((prev) => prev + response[i]);
+        setOutput((prev) => prev + char);
       }, i * 10);
-    }
+    });
   }, [response]);
 
   return (
-    <main className={`flex flex-col items-center h-screen gap-4 mt-10`}>
+    <main className="flex flex-col items-center h-screen gap-4 mt-10">
       <Toaster />
       <div className="flex gap-2 items-center mb-5">
         <MessageCircleCode size="64" />
         <span className="text-3xl font-bold">Council</span>
       </div>
+
       <div className="flex gap-2 items-center">
         <div className="relative">
           <Input
             type="text"
-            placeholder="prompt"
+            placeholder="Enter your prompt..."
             value={prompt}
-            className={cn(
-              "min-w-[320px] sm:min-w-[400px] md:min-w-[500px] h-[50px] pr-12"
-            )}
-            onChange={(e) => {
-              setPrompt(e.target.value);
-            }}
-            onKeyDown={(e) => onKeyDown(e)}
+            className="min-w-[320px] sm:min-w-[400px] md:min-w-[500px] h-[50px] pr-12"
+            onChange={(e) => setPrompt(e.target.value)}
+            onKeyDown={onKeyDown}
           />
           {loading ? (
-            <button className="absolute top-3 right-3 hover:scale-110 transition ease-in-out">
+            <button className="absolute top-3 right-3">
               <BeatLoader color="#000" size={8} />
             </button>
           ) : (
             <button
-              onClick={() => onSubmit()}
-              className="absolute top-3 right-3 hover:scale-110 transition ease-in-out"
+              onClick={onSubmit}
+              className="absolute top-3 right-3 hover:scale-110 transition"
             >
               <Send />
             </button>
           )}
         </div>
-        <Input
-          type="file"
-          onChange={(e) => onFileChange(e)}
-          className="hidden"
-        />
+        <input type="file" onChange={onFileChange} className="hidden" />
         <Button
           variant="outline"
-          className={cn("w-[40px] p-1")}
-          onClick={() => {
-            const fileInput = document.querySelector(
-              "input[type=file]"
-            ) as HTMLInputElement;
-            fileInput.click();
-          }}
+          className="w-[40px] p-1"
+          onClick={() => (document.querySelector("input[type=file]") as HTMLInputElement)?.click()}
         >
-          <Upload className={cn("w-[20px]")} />
+          <Upload className="w-[20px]" />
         </Button>
       </div>
+
       <div className="flex gap-3 items-center">
-        <Card
-          className={cn(
-            "p-5 whitespace-normal min-w-[320px] sm:w-[500px] md:min-w-[600px] min-h-[150px] max-h-[400px] lg:min-w-[700px] overflow-y-scroll"
-          )}
-        >
-          <div className={`${styles.textwrapper}`}>
-            <Markdown className={cn("w-full h-full ")}>{`${output}`}</Markdown>
+        <Card className="p-5 min-w-[320px] sm:w-[500px] md:min-w-[600px] min-h-[150px] max-h-[400px] lg:min-w-[700px] overflow-y-scroll">
+          <div className={styles.textwrapper}>
+            <Markdown className="w-full h-full">{output}</Markdown>
           </div>
         </Card>
         <div className="flex flex-col gap-5">
-          <Button
-            variant="outline"
-            className={cn("w-[40px] p-1")}
-            onClick={() => copyToClipboard()}
-          >
-            <Copy className={cn("w-[20px]")} />
+          <Button variant="outline" className="w-[40px] p-1" onClick={copyToClipboard}>
+            <Copy className="w-[20px]" />
           </Button>
-          <Button
-            variant="outline"
-            className={cn("w-[40px] p-1")}
-            onClick={() => downloadFile()}
-          >
-            <Download className={cn("w-[20px]")} />
+          <Button variant="outline" className="w-[40px] p-1" onClick={downloadFile}>
+            <Download className="w-[20px]" />
           </Button>
         </div>
       </div>

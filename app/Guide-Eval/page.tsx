@@ -63,22 +63,22 @@ export default function Career() {
         <main className={`p-10 flex mt-10 ${styles.career} w-full`}>
             <Toaster />
             <div className={`${styles.imageContainer}`}>
-                <Image src="/icons/anger.png" alt="Anger" width={80} height={80} onClick={handleClick}/>
-                <Image src="/icons/anxiety.png" alt="Anxiety" width={80} height={80} onClick={handleClick} />
-                <Image src="/icons/bipolar.png" alt="Bipolar" width={80} height={80} onClick={handleClick} />
-                <Image src="/icons/depression.png" alt="Depression" width={80} height={80} onClick={handleClick} />
-                <Image src="/icons/weight-loss.png" alt="WeightLoss" width={80} height={80} onClick={handleClick} />
-                <Image src="/icons/loneliness.png" alt="Loneliness" width={80} height={80} onClick={handleClick} />
-                <Image src="/icons/fear.png" alt="Fear" width={80} height={80} onClick={handleClick} />
-                <Image src="/icons/insomnia.png" alt="Insomnia" width={80} height={80} onClick={handleClick} />
-                <Image src="/icons/listen.png" alt="HearingVoices" width={80} height={80} onClick={handleClick} />
-                <Image src="/icons/panic-attack.png" alt="PanicAttack" width={80} height={80} onClick={handleClick} />
-                <Image src="/icons/paranoia.png" alt="Paranoia" width={80} height={80} onClick={handleClick} />
-                <Image src="/icons/phobia.png" alt="Phobia" width={80} height={80} onClick={handleClick} />
-                <Image src="/icons/psychosis.png" alt="Psychosis" width={80} height={80} onClick={handleClick} />
-                <Image src="/icons/schizophrenia.png" alt="Schizophrenia" width={80} height={80} onClick={handleClick} />
-                <Image src="/icons/self-confidence.png" alt="SelfConfidence" width={80} height={80} onClick={handleClick} />
-                <Image src="/icons/self-harm.png" alt="SelfHarm" width={80} height={80} onClick={handleClick} />
+                <center><b><h4><Image src="/icons/anger.png" alt="Anger" width={80} height={80} onClick={handleClick}/>Anger</h4></b></center>
+                <center><b><h4><Image src="/icons/anxiety.png" alt="Anxiety" width={80} height={80} onClick={handleClick} />Anxiety</h4></b></center>
+                <center><b><h4><Image src="/icons/bipolar.png" alt="Bipolar" width={80} height={80} onClick={handleClick} />Bipolar</h4></b></center>
+                <center><b><h4><Image src="/icons/depression.png" alt="Depression" width={80} height={80} onClick={handleClick} />Depression</h4></b></center>
+                <center><b><h4><Image src="/icons/weight-loss.png" alt="WeightLoss" width={80} height={80} onClick={handleClick} />WeightLoss</h4></b></center>
+                <center><b><h4><Image src="/icons/loneliness.png" alt="Loneliness" width={80} height={80} onClick={handleClick} />Loneliness</h4></b></center>
+                <center><b><h4><Image src="/icons/fear.png" alt="Fear" width={80} height={80} onClick={handleClick} />Fear</h4></b></center>
+                <center><b><h4><Image src="/icons/insomnia.png" alt="Insomnia" width={80} height={80} onClick={handleClick} />Insomnia</h4></b></center>
+                <center><b><h4><Image src="/icons/listen.png" alt="HearingVoices" width={80} height={80} onClick={handleClick} />HearingVoices</h4></b></center>
+                <center><b><h4><Image src="/icons/panic-attack.png" alt="PanicAttack" width={80} height={80} onClick={handleClick} />PanicAttack</h4></b></center>
+                <center><b><h4><Image src="/icons/paranoia.png" alt="Paranoia" width={80} height={80} onClick={handleClick} />Paranoia</h4></b></center>
+                <center><b><h4><Image src="/icons/phobia.png" alt="Phobia" width={80} height={80} onClick={handleClick} />Phobia</h4></b></center>
+                <center><b><h4><Image src="/icons/psychosis.png" alt="Psychosis" width={80} height={80} onClick={handleClick} />Psychosis</h4></b></center>
+                <center><b><h4><Image src="/icons/schizophrenia.png" alt="Schizophrenia" width={80} height={80} onClick={handleClick} />Schizophrenia</h4></b></center>
+                <center><b><h4><Image src="/icons/self-confidence.png" alt="SelfConfidence" width={80} height={80} onClick={handleClick} />SelfConfidence</h4></b></center>
+                <center><b><h4><Image src="/icons/self-harm.png" alt="SelfHarm" width={80} height={80} onClick={handleClick} />SelfHarm</h4></b></center>
             </div>
             <div className={`${styles.imageContent}`}>
                 <h1 className={`${styles.h1}`}>{selectedCareer}</h1>

@@ -90,7 +90,7 @@ export default function Contact() {
               width={25}
               height={25}
             />
-            <p>+91 6281768263</p>
+            <p>‪+91 8130441424‬</p>
           </span>
           <span className="flex gap-5 align-center">
             <Image
@@ -100,7 +100,7 @@ export default function Contact() {
               width={25}
               height={25}
             />
-            <p>kanugurajesh3@gmail.com</p>
+            <p>sharmasushmita1732@gmail.com</p>
           </span>
           <span className="flex gap-5 align-center">
             <Image
@@ -110,13 +110,13 @@ export default function Contact() {
               width={25}
               height={25}
             />
-            <Link href="https://www.instagram.com/kanugurajesh/">
-              <p>kanugurajesh</p>
+            <Link href="https://www.instagram.com/sushmitasharma2962/">
+              <p>Sushmita Sharma</p>
             </Link>
           </span>
         </div>
         <div className="flex gap-10">
-          <Link href="https://www.linkedin.com/in/rajesh-kanugu-aba8a3254/">
+          <Link href="https://www.linkedin.com/in/sushmita-sharma-2775b9232/">
             <Image
               src="/linkedin-contact.png"
               className="hover:scale-110 transition ease-in-out"
@@ -125,7 +125,7 @@ export default function Contact() {
               height={35}
             />
           </Link>
-          <Link href="https://twitter.com/exploringengin1">
+          {/* <Link href="https://twitter.com/exploringengin1">
             <Image
               src="/twitter.png"
               className="hover:scale-110 transition ease-in-out"
@@ -133,8 +133,8 @@ export default function Contact() {
               width={35}
               height={35}
             />
-          </Link>
-          <Link href="https://www.instagram.com/kanugurajesh/">
+          </Link> */}
+          <Link href="https://www.instagram.com/sushmitasharma2962/">
             <Image
               src="/instagram-contact.png"
               className="hover:scale-110 transition ease-in-out"
@@ -143,7 +143,7 @@ export default function Contact() {
               height={35}
             />
           </Link>
-          <Link href="https://github.com/kanugurajesh/">
+          <Link href="https://github.com/Sush-2002">
             <Image
               src="/github-contact.png"
               className="hover:scale-110 transition ease-in-out"
@@ -222,6 +222,6 @@ export default function Contact() {
           </button>
         </div>
       </div>
-    </div>
-  );
+    </div>
+  );
 }

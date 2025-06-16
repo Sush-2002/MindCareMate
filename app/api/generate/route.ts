@@ -1,59 +1,42 @@
 import { NextResponse, NextRequest } from 'next/server';
-import Replicate from 'replicate';
+import OpenAI from 'openai';
 
-const replicate = new Replicate({
-    auth: process.env.REPLICATE_API_TOKEN,
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY!,
 });
 
 export const GET = async () => {
-    return NextResponse.json({ message: 'Hello, Next.js Version 13!' }, { status: 200 });
+  return NextResponse.json({ message: 'Hello, Next.js Version 13!' }, { status: 200 });
 };
 
 export const POST = async (request: NextRequest) => {
-
-    // @ts-ignore
+  try {
     const body = await request.json();
+    const { gender, userPrompt } = body;
 
-    const { gender, userPrompt, selectedFile } = body;
+    const prompt = userPrompt || `A portrait of a ${gender}`;
 
-    const prompt = userPrompt ? userPrompt : `Generate a image of a ${gender}`;
+    const response = await openai.images.generate({
+      model: 'dall-e-3',
+      prompt: prompt,
+      n: 1,
+      size: '1024x1024',
+    });
 
-    const imageGeneration = await replicate.run(
-        "stability-ai/stable-diffusion:ac732df83cea7fff18b8472768c88ad041fa750ff7682a21affe81863cbe77e4",
-        {
-            input: {
-                prompt: prompt,
-            }
-        }
-    );
+    // The response is already parsed; no need to call .json()
+    const imageUrl = response.data?.[0]?.url;
 
-    if (!imageGeneration) {
-        return NextResponse.json({ message: 'Error generating image' }, { status: 500 })
+    if (!imageUrl) {
+      return NextResponse.json({ message: 'No image URL found in response' }, { status: 500 });
     }
 
-    // @ts-ignore
-    const image = imageGeneration[0];
+    return NextResponse.json({ imageUrl }, { status: 200 });
 
-    const SwapImage = await replicate.run(
-        "yan-ops/face_swap:d5900f9ebed33e7ae08a07f17e0d98b4ebc68ab9528a70462afc3899cfe23bab",
-        {
-            input: {
-                weight: 0.5,
-                cache_days: 10,
-                det_thresh: 0.1,
-                request_id: "aa6a2aad-90ec-4c00-b90b-89f4d62e6b84",
-                source_image: selectedFile,
-                target_image: image,
-            }
-        }
-    );
-
-    if (!SwapImage) {
-        return NextResponse.json({ message: 'Error generating image' }, { status: 500 })
-    }
-
-    // @ts-ignore
-    const swapppedImage = SwapImage.image as string;
-
-    return NextResponse.json({ imageURl: swapppedImage }, { status: 200 })
+  } catch (error: any) {
+    console.error('Image generation error:', error);
+    return NextResponse.json({
+      message: 'Image generation failed',
+      error: error?.message || 'Unknown error',
+    }, { status: 400 });
+  }
 };

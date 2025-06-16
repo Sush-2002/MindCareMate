@@ -135,6 +135,6 @@ export default function Home() {
           {output}
         </Markdown>
       )}
-    </main>
-  )
+    </main>
+  )
 }
